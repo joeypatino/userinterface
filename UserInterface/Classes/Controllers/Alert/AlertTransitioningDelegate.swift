@@ -1,0 +1,47 @@
+public class AlertTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
+    public var interactiveDismiss = false {
+        didSet { interactionController.enabled = interactiveDismiss }
+    }
+
+    private var interactionController: ActionSheetInteractiveTransition
+    private var presentationController: AlertPresentationController?
+    private var presentationBackgroundColor: UIColor
+
+    public init(presentingViewController: UIViewController, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7)) {
+        self.interactionController = ActionSheetInteractiveTransition(presentingViewController: presentingViewController)
+        self.presentationBackgroundColor = backgroundColor
+        super.init()
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return AlertTransitionAnimator(type: .dismiss)
+    }
+    
+    public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        presentationController = AlertPresentationController(presentedViewController: presented, presenting: presenting, backgroundViewColor: presentationBackgroundColor)
+        presentationController?.delegate = self
+        return presentationController
+    }
+    
+    public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        guard interactionController.isInteractive && interactiveDismiss else { return nil }
+        return interactionController
+    }
+}
+
+extension AlertTransitioningDelegate: UIAdaptivePresentationControllerDelegate {
+    public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .overCurrentContext
+    }
+    
+    public func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .overCurrentContext
+    }
+    
+    public func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+        return nil
+    }
+    
+    public func presentationController(_ presentationController: UIPresentationController, willPresentWithAdaptiveStyle style: UIModalPresentationStyle, transitionCoordinator: UIViewControllerTransitionCoordinator?) {
+    }
+}
