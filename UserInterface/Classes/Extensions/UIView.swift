@@ -46,30 +46,6 @@ public extension UIView {
             return (top: top, left: left, bottom: bottom, right: right)
         }
     }
-
-//    @discardableResult
-//    func embed(in view: UIView, inset: UIEdgeInsets = .zero, usingSafeAreaLayoutGuides: Bool = false, adjustment: ((NSLayoutConstraint) -> Void)? = nil) -> (top: NSLayoutConstraint, left: NSLayoutConstraint, bottom: NSLayoutConstraint, right: NSLayoutConstraint){
-//        view.addAutoLayoutSubview(self)
-//        if #available(iOS 11.0, *), usingSafeAreaLayoutGuides {
-//            let top = topAnchor.equalTo(view.safeAreaLayoutGuide.topAnchor).constant(inset.top)
-//            let left = leadingAnchor.equalTo(view.safeAreaLayoutGuide.leadingAnchor).constant(inset.left)
-//            let bottom = bottomAnchor.equalTo(view.safeAreaLayoutGuide.bottomAnchor).constant(-inset.bottom)
-//            let right = trailingAnchor.equalTo(view.safeAreaLayoutGuide.trailingAnchor).constant(-inset.right)
-//            [top, left, bottom, right].forEach { $0.isActive = false }
-//            [top, left, bottom, right].forEach { adjustment?($0) }
-//            [top, left, bottom, right].forEach { $0.isActive = true }
-//            return (top: top, left: left, bottom: bottom, right: right)
-//        } else {
-//            let top = topAnchor.equalTo(view.topAnchor).constant(inset.top)
-//            let left = leadingAnchor.equalTo(view.leadingAnchor).constant(inset.left)
-//            let bottom = bottomAnchor.equalTo(view.bottomAnchor).constant(-inset.bottom)
-//            let right = trailingAnchor.equalTo(view.trailingAnchor).constant(-inset.right)
-//            [top, left, bottom, right].forEach { $0.isActive = false }
-//            [top, left, bottom, right].forEach { adjustment?($0) }
-//            [top, left, bottom, right].forEach { $0.isActive = true }
-//            return (top: top, left: left, bottom: bottom, right: right)
-//        }
-//    }
     
     @discardableResult
     func center(in view: UIView, offset: CGPoint = .zero, inset: CGSize = .zero) -> (centerX: NSLayoutConstraint, centerY: NSLayoutConstraint, width: NSLayoutConstraint, height: NSLayoutConstraint) {
