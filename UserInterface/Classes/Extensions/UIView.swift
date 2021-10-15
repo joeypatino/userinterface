@@ -110,3 +110,53 @@ public extension UIView {
         })
     }
 }
+
+public extension UIView {
+    struct UICornerMask: OptionSet {
+        public let rawValue: Int
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+        static var allCorners: UICornerMask = [.topLeftCorner, .topRightCorner, .bottomLeftCorner, .bottomRightCorner]
+        static var topLeftCorner = UICornerMask(rawValue: 1 << 0)
+        static var topRightCorner = UICornerMask(rawValue: 1 << 1)
+        static var bottomLeftCorner = UICornerMask(rawValue: 1 << 2)
+        static var bottomRightCorner = UICornerMask(rawValue: 1 << 3)
+    }
+
+    var maskedCorners: UICornerMask {
+        get {
+            let maskedCorners = layer.maskedCorners
+            var corners: UICornerMask = []
+            if maskedCorners.contains(.layerMaxXMaxYCorner) {
+                corners.insert(.bottomRightCorner)
+            }
+            if maskedCorners.contains(.layerMinXMaxYCorner) {
+                corners.insert(.bottomLeftCorner)
+            }
+            if maskedCorners.contains(.layerMaxXMinYCorner) {
+                corners.insert(.topRightCorner)
+            }
+            if maskedCorners.contains(.layerMinXMinYCorner) {
+                corners.insert(.topLeftCorner)
+            }
+            return corners
+        }
+        set {
+            var corners: CACornerMask = []
+            if newValue.contains(.bottomRightCorner) {
+                corners.insert(.layerMaxXMaxYCorner)
+            }
+            if newValue.contains(.bottomLeftCorner) {
+                corners.insert(.layerMinXMaxYCorner)
+            }
+            if newValue.contains(.topRightCorner) {
+                corners.insert(.layerMaxXMinYCorner)
+            }
+            if newValue.contains(.topLeftCorner) {
+                corners.insert(.layerMinXMinYCorner)
+            }
+            layer.maskedCorners = corners
+        }
+    }
+}

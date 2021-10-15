@@ -169,3 +169,17 @@ public extension StackViewConformable {
         addArrangedSubview(stack)
     }
 }
+
+public extension UIStackView {
+    static func verticalStack(_ arrangedViews: [UIView]) -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: arrangedViews)
+        stack.axis = .vertical
+        return stack
+    }
+    
+    static func horizontalStack(_ arrangedViews: [UIView]) -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: arrangedViews)
+        stack.axis = .horizontal
+        return stack
+    }
+}

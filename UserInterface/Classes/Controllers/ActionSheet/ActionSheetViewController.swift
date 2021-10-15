@@ -1,11 +1,14 @@
+import QuartzCore
 public struct ActionSheetAction {
     public var title: String?
     public var icon: UIImage?
     public let action: (() -> Void)?
+    public var titleAttributes: [NSAttributedString.Key: Any]? = nil
 
-    public init(title: String?, icon: UIImage? = nil, action: (() -> Void)? = nil) {
+    public init(title: String?, icon: UIImage? = nil, titleAttributes: [NSAttributedString.Key: Any]? = nil, action: (() -> Void)? = nil) {
         self.title = title
         self.icon = icon
+        self.titleAttributes = titleAttributes
         self.action = action
     }
 }
@@ -17,11 +20,13 @@ public protocol ActionSheetViewControllerDelegate: AnyObject {
 
 public final class ActionSheetViewController: UIViewController {
     public var delegate: ActionSheetViewControllerDelegate?
+    public var titleAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16.0, weight: .regular) as Any, .foregroundColor: UIColor.black] {
+        didSet { stylize() }
+    }
     
     private lazy var cancel = UIButton()
     private var actions: [ActionSheetAction] = []
     private var buttons: [ActionSheetButton] = []
-    private var attrs: [NSAttributedString.Key: Any] { [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16.0, weight: .regular) as Any, .foregroundColor: UIColor.black] }
     
     /// when true, the delegate is called when the view is touched outside bounds of any of the buttons
     public var cancelsOnOutsideTouches: Bool = true
@@ -57,7 +62,7 @@ public final class ActionSheetViewController: UIViewController {
         let button = ActionSheetButton()
         let action = actions[index]
         button.image = action.icon
-        button.setAttributedTitle(NSAttributedString(string: action.title ?? "", attributes: attrs), for: .normal)
+        button.setAttributedTitle(NSAttributedString(string: action.title ?? "", attributes: titleAttributes), for: .normal)
         button.addTarget(self, action: #selector(onAction), for: .touchUpInside)
         button.tag = index
 
@@ -65,15 +70,15 @@ public final class ActionSheetViewController: UIViewController {
         case 0 where actions.count == 1:
             // round the top-left and top-right corners of the top button
             button.layer.cornerRadius = 8
-            button.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            button.maskedCorners = .allCorners
         case 0 where actions.count > 1:
             // round the top-left and top-right corners of the top button
             button.layer.cornerRadius = 8
-            button.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+            button.maskedCorners = [.topLeftCorner, .topRightCorner]
         case actions.count - 1:
             // round the bottom-left and bottom-right corners of the bottom button
             button.layer.cornerRadius = 8
-            button.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            button.maskedCorners = [.bottomLeftCorner, .bottomRightCorner]
         default: break
         }
 
@@ -126,12 +131,12 @@ public final class ActionSheetViewController: UIViewController {
         cancel.contentHorizontalAlignment = .center
         
         cancel.layer.cornerRadius = 8
-        cancel.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        cancel.maskedCorners = .allCorners
         cancel.addTarget(self, action: #selector(cancelAction), for: .touchUpInside)
     }
     
     private func stylize() {
-        cancel.setAttributedTitle(NSAttributedString(string: NSLocalizedString("Cancel", comment: "Action Sheet Cancel button"), attributes: attrs), for: .normal)
+        cancel.setAttributedTitle(NSAttributedString(string: NSLocalizedString("Cancel", comment: "Action Sheet Cancel button"), attributes: titleAttributes), for: .normal)
     }
     
     // MARK: Public
